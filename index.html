@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <link href="data:image/x-icon;" rel="icon" />
+    <title>LineageOS Devices Table</title>
+    <style>
+      body {
+        color: #fff;
+        background-color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import YAML from 'https://cdn.jsdelivr.net/npm/yaml@2.3.0/+esm' 
+      window.YAML = YAML;
+    </script>
+    <script>
+      (async () => {
+
+        if (window.localStorage.getItem("activeModels") === null) {
+          const r = await fetch("https://download.lineageos.org/api/v2/oems");
+          const rr = await r.json();
+          window.localStorage.setItem("activeModels", JSON.stringify(rr.flatMap(b=>b.devices).map(m=>m.model)));
+        }
+        const activeModels = JSON.parse(window.localStorage.getItem("activeModels"))
+
+        if (window.localStorage.getItem("yamlFiles") === null) {
+          const r = await fetch("https://api.github.com/repositories/79186428/contents/_data/devices");
+          const rr = await r.json();
+          window.localStorage.setItem("yamlFiles", JSON.stringify(rr.map(x=>x.name)));
+        }
+        const allModels = JSON.parse(window.localStorage.getItem("yamlFiles"))
+
+        activeModels.forEach(async d => {
+          if (window.localStorage.getItem(d) === null) {
+            if (allModels.includes(`${d}.yml`)) {
+              const r = await fetch(`https://raw.githubusercontent.com/LineageOS/lineage_wiki/master/_data/devices/${d}.yml`);
+              const rr = await r.text();
+              window.localStorage.setItem(d, rr);
+            } else {
+              // we can fix this later...
+              console.log(`SKIPPING YAML DL: ${d}`)
+            } 
+          }
+        })
+
+        console.log(YAML.parse(window.localStorage.getItem('aura')))
+
+      })()
+    </script>
+  </body>
+</html>
