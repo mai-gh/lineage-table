@@ -60,18 +60,45 @@
         background-color: white;
       }
 
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        display: none;
+      }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid;
+      }
+
+      thead th {
+        position: sticky;
+        top: 0px;
+        background-color: #111;
+      }
+
+      tbody tr:hover {
+        background-color: #444;
+      }
+
     </style>
   </head>
   <body>
 
     <div id="loadingBox">
-      <!--<div id="textBox">porg_tab_variant1</div>-->
       <div id="textBox">
         <div id="textLine"></div>          
       </div>
       <div id="progressBox">
         <div id="progressComplete"></div>          
       </div>
+    </div>
+    <div id="tableDiv">
+     <table id="table">
+       <thead id='thead'></thead>
+       <tbody id='tbody'></tbody>
+     </table> 
     </div>
 
     <script type="module">
@@ -84,6 +111,9 @@
         const textLine = document.getElementById("textLine");
         const progress = document.getElementById("progressComplete");
         const loadingBox = document.getElementById("loadingBox");
+        const table = document.getElementById("table");
+        const thead = table.getElementsByTagName('thead')[0];
+        const tbody = table.getElementsByTagName('tbody')[0];
 
         if (window.localStorage.getItem("activeModels") === null) {
           const r = await fetch("https://download.lineageos.org/api/v2/oems");
@@ -132,10 +162,34 @@
           }
           progress.style.width = `${(c / activeYamls.length).toFixed(2) * 100}%`;
         } 
-        loadingBox.style.display = 'none';
-
+        data = JSON.parse(window.localStorage.getItem("data"));
         
-        console.log(JSON.parse(window.localStorage.getItem('data')))
+        const headings = Object.keys(data[Object.keys(data)[0]])
+        const hr = document.createElement('tr')
+        for (const h of headings) {
+          hr.innerHTML += `<th>${h}</th>`
+        }
+        thead.appendChild(hr);
+
+        let br;
+        for (const d of Object.values(data)) {
+          br = document.createElement('tr')
+          for (let h of headings) {
+            const v = d[h] 
+            if (typeof v === 'string') {
+              br.innerHTML += `<td>${v}</td>`
+            } else {
+              br.innerHTML += `<td>_FILLER_</td>`
+            }
+          }
+          tbody.appendChild(br);
+        }
+
+
+        loadingBox.style.display = 'none';
+        table.style.display = 'block';
+        
+        
 
       })()
     </script>
