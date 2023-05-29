@@ -122,12 +122,15 @@
       }
 
       .tb {
+        display: flex;
+        flex-direction: row;
         float: left;
         text-align: center;
         padding: 4px 16px;
         text-decoration: none;
         font-size: 17px;
         cursor: default;
+        position: relative;
       }
 
       .tb:hover {
@@ -148,6 +151,49 @@
       #searchButton:hover {
         color: #ccc;
       }
+
+      .tbText {
+        padding-left: 4px;
+        user-select: none;
+      }
+
+.dropdown {
+  float: left;
+  display: inline-block;
+}
+
+.dropdown .dropbtn {
+}
+
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  border: 1px solid white;
+  background: black; 
+  color: white;
+  min-width: 100%;
+}
+
+.dropdown-content a {
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.tbDisplay {
+  display:flex;
+  flex-direction:row;
+}
+
     </style>
   </head>
   <body>
@@ -162,31 +208,53 @@
     </div>
 
     <div id="menuDiv">
-      <div class="tb">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-layout-three-columns" viewBox="0 0 16 16">
-          <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5H5V1H1.5zM10 15V1H6v14h4zm1 0h3.5a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H11v14z"/>
-        </svg> Columns
+      <div id="btnCol" class="tb dropdown">
+        <div class="tbDisplay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-layout-three-columns" viewBox="0 0 16 16">
+            <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5H5V1H1.5zM10 15V1H6v14h4zm1 0h3.5a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H11v14z"/>
+          </svg>
+          <div class="tbText">Columns</div>
+        </div>
+
+        <div class="dropdown-content" id="colsDDC">
+          <a href="#">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </div>
+
       </div>
-      <div class="tb">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
-          <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-        </svg> Filters
+      <div class="tb dropdown">
+        <div class="tbDisplay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+            <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+          <div class="tbText">Filters</div>
+        </div>
+        <div class="dropdown-content" id=filtersDDC>
+          <a href="#">Link 11</a>
+          <a href="#">Link 12</a>
+          <a href="#">Link 13</a>
+        </div>
       </div>
+
+
       <div class="tb"> 
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap-reboot" viewBox="0 0 16 16">
           <path d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 1 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8z"/>
-        </svg> Refresh
+        </svg>
+        <div class="tbText">Refresh</div>
       </div>
       <div class="tb">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-        </svg> GitHub
+        </svg>
+        <div class="tbText">GitHub</div>
       </div>
       
       <div id="searchContainer">
-        <form>
+        <form id="searchButton">
           <input type="text" placeholder="" name="search">
-          <button id="searchButton" type="submit">
+          <button type="submit">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>
@@ -205,7 +273,8 @@
     </div>
 
     <script type="module">
-      import YAML from 'https://cdn.jsdelivr.net/npm/yaml@2.3.0/+esm' 
+      //import YAML from 'https://cdn.jsdelivr.net/npm/yaml@2.3.0/+esm' 
+      import YAML from './lib/yaml@2.3.1+esm.js'
       window.YAML = YAML;
     </script>
     <script>
@@ -282,8 +351,14 @@
             const v = d[h] 
             if (typeof v === 'string') {
               br.innerHTML += `<td>${v}</td>`
-            } else {
-              br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+            } else if (typeof d === 'object') {
+              if (Array.isArray(d)) {
+                br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+              } else {
+                br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+              }
+            } else if (d === undefined) {
+              //d = '';
             }
           }
           tbody.appendChild(br);
