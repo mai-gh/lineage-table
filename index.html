@@ -165,9 +165,6 @@
   display: inline-block;
 }
 
-.dropdown .dropbtn {
-}
-
 
 .dropdown-content {
   display: none;
@@ -176,7 +173,12 @@
   border: 1px solid white;
   background: black; 
   color: white;
-  min-width: 100%;
+  width: 500%;
+  max-height: 70vh;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: auto;
+  overflow: auto;
 }
 
 .dropdown-content a {
@@ -189,14 +191,17 @@
 }
 
 .dropdown:hover .dropdown-content {
-  display: block;
+  display: flex;
 }
 
 .tbDisplay {
   display:flex;
-  flex-direction:row;
 }
 
+.cbItem {
+  display: flex;
+  flex-direction: row;
+}
     </style>
   </head>
   <body>
@@ -220,9 +225,11 @@
         </div>
 
         <div class="dropdown-content" id="colsDDC">
+<!--
           <a href="#">Link 1</a>
           <a href="#">Link 2</a>
           <a href="#">Link 3</a>
+-->
         </div>
 
       </div>
@@ -290,6 +297,7 @@
         const thead = table.getElementsByTagName('thead')[0];
         const tbody = table.getElementsByTagName('tbody')[0];
         const menuDiv = document.getElementById("menuDiv");
+        const colsDDC = document.getElementById("colsDDC");
 
         if (window.localStorage.getItem("activeModels") === null) {
           const r = await fetch("https://download.lineageos.org/api/v2/oems");
@@ -344,6 +352,7 @@
         const hr = document.createElement('tr')
         for (const h of headings) {
           hr.innerHTML += `<th>${h}</th>`
+          colsDDC.innerHTML += `<div class="cbItem"><input type="checkbox" id="colsCB-${h}"><label for="colsCB-${h}">${h}</label><br></dev>`
         }
         thead.appendChild(hr);
 
