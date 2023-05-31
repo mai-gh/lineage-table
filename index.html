@@ -160,66 +160,64 @@
         user-select: none;
       }
 
-.dropdown {
-  float: left;
-  display: inline-block;
-}
-
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  z-index: 5;
-  border: 1px solid white;
-  background: black; 
-  color: white;
-  width: 500%;
-  max-height: 70vh;
-  flex-direction: column;
-  flex-wrap: wrap;
-  height: auto;
-  overflow: auto;
-}
-
-.dropdown-content a {
-  display: block;
-  text-align: left;
-}
-
-.dropdown:hover .dropdown-content {
-  display: flex;
-}
-
-.tbDisplay {
-  display:flex;
-}
-
-.cbItem {
-  display: flex;
-  flex-direction: row;
-}
-
-.colsCB {
-  display: none;
-}
-
-.colsCBL {
-  user-select: none;
-  cursor: pointer;
-}
-
-.cbItem > input[type=checkbox]:not(:checked) + .colsCBL {
-  text-decoration: line-through;
-  opacity: 50%;
-  color: grey;
-}
-
-.cbItem > input[type=checkbox]:checked + .colsCBL {
-  text-decoration: none;
-  opacity: 100%;
-  color: white;
-}
-
+      .dropdown {
+        float: left;
+        display: inline-block;
+      }
+      
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 5;
+        border: 1px solid white;
+        background: black; 
+        color: white;
+        width: 500%;
+        max-height: 70vh;
+        flex-direction: column;
+        flex-wrap: wrap;
+        height: auto;
+        overflow: auto;
+      }
+      
+      .dropdown-content a {
+        display: block;
+        text-align: left;
+      }
+      
+      .dropdown:hover .dropdown-content {
+        display: flex;
+      }
+      
+      .tbDisplay {
+        display:flex;
+      }
+      
+      .cbDiv {
+        display: flex;
+        flex-direction: row;
+      }
+      
+      .colsCB {
+        display: none;
+      }
+      
+      .colsCBL {
+        user-select: none;
+        cursor: pointer;
+      }
+      
+      .cbDiv > input[type=checkbox]:not(:checked) + .colsCBL {
+        text-decoration: line-through;
+        opacity: 70%;
+        color: grey;
+      }
+      
+      .cbDiv > input[type=checkbox]:checked + .colsCBL {
+        text-decoration: none;
+        opacity: 100%;
+        color: white;
+      }
 
     </style>
   </head>
@@ -234,6 +232,7 @@
       </div>
     </div>
 
+
     <div id="menuDiv">
       <div id="btnCol" class="tb dropdown">
         <div class="tbDisplay">
@@ -242,16 +241,10 @@
           </svg>
           <div class="tbText">Columns</div>
         </div>
-
-        <div class="dropdown-content" id="colsDDC">
-<!--
-          <a href="#">Link 1</a>
-          <a href="#">Link 2</a>
-          <a href="#">Link 3</a>
--->
-        </div>
-
+        <div class="dropdown-content" id="colsDDC"></div>
       </div>
+
+
       <div class="tb dropdown">
         <div class="tbDisplay">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
@@ -273,12 +266,15 @@
         </svg>
         <div class="tbText">Refresh</div>
       </div>
+
+
       <div class="tb">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
         </svg>
         <div class="tbText">GitHub</div>
       </div>
+
       
       <div id="searchContainer">
         <form id="searchButton">
@@ -302,7 +298,6 @@
     </div>
 
     <script type="module">
-      //import YAML from 'https://cdn.jsdelivr.net/npm/yaml@2.3.0/+esm' 
       import YAML from './lib/yaml@2.3.1+esm.js'
       window.YAML = YAML;
     </script>
@@ -313,8 +308,6 @@
         const progress = document.getElementById("progressComplete");
         const loadingBox = document.getElementById("loadingBox");
         const table = document.getElementById("table");
-        const thead = table.getElementsByTagName('thead')[0];
-        const tbody = table.getElementsByTagName('tbody')[0];
         const menuDiv = document.getElementById("menuDiv");
         const colsDDC = document.getElementById("colsDDC");
 
@@ -365,42 +358,82 @@
           }
           progress.style.width = `${(c / activeYamls.length).toFixed(2) * 100}%`;
         } 
-        data = JSON.parse(window.localStorage.getItem("data"));
-        
-        const headings = Object.keys(data[Object.keys(data)[0]])
-        const hr = document.createElement('tr')
-        for (const h of headings) {
-          hr.innerHTML += `<th>${h}</th>`
-          colsDDC.innerHTML += `<div class="cbItem"><input type="checkbox" id="colsCB-${h}" class="colsCB"><label for="colsCB-${h}" class="colsCBL">${h}</label><br></dev>`
-        }
-        thead.appendChild(hr);
 
-        let br;
-        for (const d of Object.values(data)) {
-          br = document.createElement('tr')
-          for (let h of headings) {
-            const v = d[h] 
-            if (typeof v === 'string') {
-              br.innerHTML += `<td>${v}</td>`
-            } else if (typeof d === 'object') {
-              if (Array.isArray(d)) {
-                br.innerHTML += `<td>${JSON.stringify(v)}</td>`
-              } else {
-                br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+        const genTable = () => {        
+          // get / gen table data
+          const colsDDC = document.getElementById("colsDDC");
+          const thead = document.getElementById('thead');
+          const tbody = document.getElementById('tbody');
+          const selectedHeadings = Array.from(colsDDC.querySelectorAll("input[type=checkbox]:checked")).map(x=>x.name);
+          const allData = JSON.parse(window.localStorage.getItem("data"));
+
+          thead.innerHTML = '';
+          tbody.innerHTML = '';
+
+          const filteredData = {};
+          for (const [k, v] of Object.entries(allData)) {
+            filteredData[k] = {};
+            for (const [kk, vv] of Object.entries(v)) { 
+              if (selectedHeadings.includes(kk)) {
+                filteredData[k][kk] = vv
               }
-            } else if (d === undefined) {
-              //d = '';
             }
+          } 
+
+          // gen the heading
+          const hr = document.createElement('tr')
+          for (const h of selectedHeadings) {
+            hr.innerHTML += `<th>${h}</th>`
           }
-          tbody.appendChild(br);
+          thead.appendChild(hr);
+
+          // gen the body
+          let br;
+          for (const d of Object.values(filteredData)) {
+            br = document.createElement('tr')
+            for (let h of selectedHeadings) {
+              const v = d[h] 
+              if (typeof v === 'string') {
+                br.innerHTML += `<td>${v}</td>`
+              } else if (typeof d === 'object') {
+                if (Array.isArray(d)) {
+                  br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+                } else {
+                  br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+                }
+              } else if (d === undefined) {
+                //d = '';
+              }
+            }
+            tbody.appendChild(br);
+          }
         }
 
+        // create the columns drop down menu
+        const allHeadings = Object.keys(data[Object.keys(data)[0]])
+        for (const h of allHeadings) {
+          const cbDiv = document.createElement('div');
+          cbDiv.classList.add("cbDiv");
+          const colsCB = document.createElement('input');
+          colsCB.setAttribute("type", "checkbox");
+          colsCB.setAttribute("name", h);
+          colsCB.id = `colsCB-${h}`;
+          colsCB.classList.add("colsCB");
+          colsCB.checked = true;
+          const colsCBL = document.createElement('label');
+          colsCBL.setAttribute("for", `colsCB-${h}`);
+          colsCBL.classList.add("colsCBL");
+          colsCBL.innerText = h;
+          colsCB.addEventListener('change', genTable);
+          cbDiv.appendChild(colsCB);
+          cbDiv.appendChild(colsCBL);
+          colsDDC.appendChild(cbDiv);
+        }
 
         loadingBox.style.display = 'none';
         table.style.display = 'block';
         menuDiv.style.display = 'block';
-        
-        
+        genTable();
 
       })()
     </script>
