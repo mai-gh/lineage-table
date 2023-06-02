@@ -176,6 +176,7 @@
         max-height: 70vh;
         flex-direction: column;
         flex-wrap: wrap;
+        flex-basis: max-content;
         height: auto;
         overflow: auto;
       }
@@ -184,8 +185,9 @@
         display: block;
         text-align: left;
       }
+
       
-      .dropdown:hover .dropdown-content {
+      .dropdown:hover .dropdown-content, .dropdown-content:hover, .ddcStayOpen {
         display: flex;
       }
       
@@ -205,6 +207,13 @@
       .colsCBL {
         user-select: none;
         cursor: pointer;
+      }
+
+      .dragging {
+        cursor: move;
+        opacity: 0.5;
+        color: black;
+  border: 1px solid white ;
       }
       
       .cbDiv > input[type=checkbox]:not(:checked) + .colsCBL {
@@ -414,21 +423,37 @@
         for (const h of allHeadings) {
           const cbDiv = document.createElement('div');
           cbDiv.classList.add("cbDiv");
+          cbDiv.classList.add("draggable");
+          cbDiv.setAttribute("draggable", true);
+          cbDiv.addEventListener("dragstart", (e) => { colsDDC.classList.add("ddcStayOpen"); e.target.classList.add("dragging"); });
+          cbDiv.addEventListener("dragend", (e) => { colsDDC.classList.remove("ddcStayOpen"); e.target.classList.remove("dragging"); });
+          cbDiv.id = `cbDiv-${h}`;
+
           const colsCB = document.createElement('input');
           colsCB.setAttribute("type", "checkbox");
           colsCB.setAttribute("name", h);
           colsCB.id = `colsCB-${h}`;
           colsCB.classList.add("colsCB");
           colsCB.checked = true;
+          colsCB.addEventListener('change', genTable);
           const colsCBL = document.createElement('label');
           colsCBL.setAttribute("for", `colsCB-${h}`);
           colsCBL.classList.add("colsCBL");
           colsCBL.innerText = h;
-          colsCB.addEventListener('change', genTable);
           cbDiv.appendChild(colsCB);
           cbDiv.appendChild(colsCBL);
           colsDDC.appendChild(cbDiv);
         }
+
+        colsDDC.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          colsDDC.classList.add("ddcStayOpen")
+          const dragging = document.querySelector(".dragging");
+          if (e.target.classList.contains('colsCBL')) {
+            console.log('E:', e.target.parentNode, 'D:', dragging)
+            e.target.parentNode.insertAdjacentElement('afterend', dragging)
+          }
+        });
 
         loadingBox.style.display = 'none';
         table.style.display = 'block';
