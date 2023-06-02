@@ -426,7 +426,11 @@
           cbDiv.classList.add("draggable");
           cbDiv.setAttribute("draggable", true);
           cbDiv.addEventListener("dragstart", (e) => { colsDDC.classList.add("ddcStayOpen"); e.target.classList.add("dragging"); });
-          cbDiv.addEventListener("dragend", (e) => { colsDDC.classList.remove("ddcStayOpen"); e.target.classList.remove("dragging"); });
+          cbDiv.addEventListener("dragend", (e) => { 
+            colsDDC.classList.remove("ddcStayOpen");
+            e.target.classList.remove("dragging");
+            genTable();
+          });
           cbDiv.id = `cbDiv-${h}`;
 
           const colsCB = document.createElement('input');
