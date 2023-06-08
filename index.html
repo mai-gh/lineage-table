@@ -427,16 +427,14 @@
               const v = d[h] 
               if (typeof v === 'string') {
                 br.innerHTML += `<td>${v}</td>`
-/*
-              } else if (typeof d === 'object') {
+
+              } else if (typeof v === 'object') {
                 if (Array.isArray(d)) {
                   br.innerHTML += `<td>${JSON.stringify(v)}</td>`
                 } else {
                   br.innerHTML += `<td>${JSON.stringify(v)}</td>`
                 }
               } else if (d === undefined) {
-                //d = '';
-*/
               }
             }
             tbody.appendChild(br);
