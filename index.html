@@ -66,22 +66,27 @@
       }
 
       table {
-        top: 5vh;
+        top: 2em;
         position: absolute;
         border-collapse: collapse;
         display: none;
         width: max-content;
+        height: auto;
       }
 
       th, td {
         padding: 8px;
         text-align: left;
         border: 1px solid;
+        max-width: 200px;
+        word-wrap: break-word;
+white-space: pre-wrap;
+word-break: break-word;
       }
 
       thead th {
+        top: 2em;
         position: sticky;
-        top: 5vh;
         background-color: black;
         outline: white solid 1px;
       }
@@ -107,7 +112,7 @@
 
       #menuDiv {
         display: none;
-        height: auto;
+        height: 2em;
         width: 100%;
         top: 0px;
         left: 0;
@@ -179,6 +184,7 @@
         flex-basis: max-content;
         height: auto;
         overflow: auto;
+        padding: 8px;
       }
       
       .dropdown-content a {
@@ -283,9 +289,15 @@
           <div class="tbText">Filters</div>
         </div>
         <div class="dropdown-content" id=filtersDDC>
+          <div id="filterBatteryType"></div>
+          
+          <div id="filterBatteryCapacity"></div>
+
+<!--
           <a href="#">Link 11</a>
           <a href="#">Link 12</a>
           <a href="#">Link 13</a>
+-->
         </div>
       </div>
 
@@ -332,8 +344,16 @@
     <script type="module">
       import YAML from './lib/yaml@2.3.1+esm.js'
       window.YAML = YAML;
+      window.Object.isObject = (input) => {
+        if (typeof input === Object) {
+          if (!(Array.isArray(input))) {
+            return true;
+          }
+        }
+        return false;
+      }
     </script>
-    <script>
+    <script type="module">
       (async () => {
 
         const textLine = document.getElementById("textLine");
@@ -342,6 +362,10 @@
         const table = document.getElementById("table");
         const menuDiv = document.getElementById("menuDiv");
         const colsDDC = document.getElementById("colsDDC");
+
+
+window.localStorage.removeItem("data")
+
 
         if (window.localStorage.getItem("activeModels") === null) {
           const r = await fetch("https://download.lineageos.org/api/v2/oems");
@@ -377,15 +401,89 @@
           }
         }
 
+        const flattenData = (m) => {
+
+          if (typeof m.architecture === 'string') {
+            //m.userspace_architecture = m.architecture
+          } else {
+            //m.userspace_architecture = m.architecture.userspace;
+            m.architecture = m.architecture.cpu;
+          }
+
+          if (m.battery === 'None') {
+            m.has_battery = false;
+            m.battery_removable = undefined;
+            m.battery_capacity = undefined;
+            m.battery_tech = undefined;
+          } else {
+            m.has_battery = true;
+            m.battery_removable = m.battery.removable;
+            m.battery_capacity = m.battery.capacity;
+            m.battery_tech = m.battery.tech;
+          }
+
+          delete m.battery;
+          delete m.before_install;
+          delete m.before_recovery_install
+          delete m.image;
+          delete m.download_boot;
+          delete m.firmware_update;
+          delete m.install_method;
+          delete m.maintainers;
+          delete m.recovery_boot;
+          delete m.vendor_short;
+
+          m.bluetooth_spec = m.bluetooth.spec;
+          m.bluetooth_profiles = (m.bluetooth.profiles) ? m.bluetooth.profiles[0] : undefined;
+          delete m.bluetooth;
+
+          m.cameras.forEach((c, idx)=>{
+            m[`camera_${idx}`] = JSON.stringify(c);
+          });
+          delete m.cameras;
+          
+          m.width_mm =  (m.dimensions === 'None') ? undefined : m.dimensions.width.split(' mm')[0];
+          m.height_mm = (m.dimensions === 'None') ? undefined : m.dimensions.height.split(' mm')[0];
+          m.depth_mm =  (m.dimensions === 'None') ? undefined : m.dimensions.depth.split(' mm')[0];
+          delete m.dimensions;
+
+          m.screen_size_mm = (m.screen.size === undefined) ? undefined : m.screen.size.split(' mm')[0];
+          m.screen_density = m.screen.density;
+          m.screen_resolution = m.screen.resolution; 
+          m.screen_tech = m.screen.technology;
+          delete m.screen;
+
+          return Object.assign({
+            'codename': null,
+            'vendor': null,
+            'name': null,
+            'release': null,
+          }, m);
+        }
+
+        if (window.localStorage.getItem("yamlObj") === null) {
+          window.localStorage.setItem("yamlObj", JSON.stringify({}));
+        }
+
+        let yamlObj = JSON.parse(window.localStorage.getItem("yamlObj"));
+
         let c = 0
         for (let d of activeYamls) {
           c++;
           textLine.innerHTML = d;
+          console.log(`${((c / activeYamls.length) * 100).toFixed(0)}%`)
           if (!(d in data)) {
-            const r = await fetch(`https://raw.githubusercontent.com/LineageOS/lineage_wiki/master/_data/devices/${d}.yml`);
-            const rr = await r.text();
+            if (!(yamlObj[d])) {
+              const r = await fetch(`https://raw.githubusercontent.com/LineageOS/lineage_wiki/master/_data/devices/${d}.yml`);
+              const rr = await r.text();
+              yamlObj[d] = rr;
+              window.localStorage.setItem("yamlObj", JSON.stringify(yamlObj));
+            }
             data = JSON.parse(window.localStorage.getItem("data"));
-            data[d] = YAML.parse(rr);
+            let dd = JSON.parse(window.localStorage.getItem("yamlObj"))[d];
+            data[d] = flattenData(YAML.parse(dd));
+            //data[d] = flattenData(YAML.parse(rr));
+            //data[d] = YAML.parse(rr);
             window.localStorage.setItem("data", JSON.stringify(data));
           }
           progress.style.width = `${(c / activeYamls.length).toFixed(2) * 100}%`;
@@ -428,13 +526,15 @@
               if (typeof v === 'string') {
                 br.innerHTML += `<td>${v}</td>`
 
-              } else if (typeof v === 'object') {
-                if (Array.isArray(d)) {
+              //} else if (typeof v === 'object') {
+              //  if (Array.isArray(v)) {
+              //    br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+              //  } else {
+              //    br.innerHTML += `<td>${JSON.stringify(v)}</td>`
+              //  }
+              //} else if (v === undefined) {
+              } else {
                   br.innerHTML += `<td>${JSON.stringify(v)}</td>`
-                } else {
-                  br.innerHTML += `<td>${JSON.stringify(v)}</td>`
-                }
-              } else if (d === undefined) {
               }
             }
             tbody.appendChild(br);
